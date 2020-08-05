@@ -25,15 +25,13 @@ along with Java Marine API. If not, see <http://www.gnu.org/licenses />.
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sf.marineapi</groupId>
     <artifactId>marineapi</artifactId>
-    <version>0.12.0-SNAPSHOT</version>
+    <version>0.12.0-patch_1</version>
     <packaging>bundle</packaging>
 
     <name>Java Marine API</name>
-    <url>http://ktuukkan.github.io/marine-api/</url>
-    <description>
-        Java Marine API is an NMEA 0183 library for Java
-        (http://ktuukkan.github.io/marine-api/).
-    </description>
+    <url>https://github.com/QYBEX/marine-api</url>
+    <description>Java Marine API is an NMEA 0183 library for Java.
+ Fork from  (http://ktuukkan.github.io/marine-api/).</description>
 
     <licenses>
         <license>
@@ -53,8 +51,7 @@ along with Java Marine API. If not, see <http://www.gnu.org/licenses />.
     </parent>
 
     <organization>
-        <name>Kimmo Tuukkanen</name>
-        <url>https://github.com/ktuukkan/</url>
+        <name>QYBEX</name>
     </organization>
 
     <developers>
@@ -66,10 +63,9 @@ along with Java Marine API. If not, see <http://www.gnu.org/licenses />.
     </developers>
 
     <scm>
-        <connection>scm:git:git@github.com:ktuukkan/marine-api.git</connection>
-        <developerConnection>scm:git:git@github.com:ktuukkan/marine-api.git
-        </developerConnection>
-        <url>git@github.com:ktuukkan/marine-api.git</url>
+        <connection>scm:git:git@github.com/QYBEX/marine-api.git</connection>
+        <developerConnection>scm:git:git@github.com/QYBEX/marine-api.git</developerConnection>
+        <url>git@github.com/QYBEX/marine-api.git</url>
     </scm>
 
     <distributionManagement>
@@ -88,7 +84,7 @@ along with Java Marine API. If not, see <http://www.gnu.org/licenses />.
 
     <issueManagement>
         <system>Github</system>
-        <url>https://github.com/ktuukkan/marine-api/issues</url>
+        <url>https://github.com/QYBEX/marine-api/issues</url>
     </issueManagement>
 
     <dependencies>
@@ -108,6 +104,7 @@ along with Java Marine API. If not, see <http://www.gnu.org/licenses />.
 
     <build>
         <plugins>
+        <!-- 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
@@ -128,6 +125,7 @@ along with Java Marine API. If not, see <http://www.gnu.org/licenses />.
                     </execution>
                 </executions>
             </plugin>
+         -->
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
