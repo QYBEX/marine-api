@@ -35,7 +35,7 @@ import net.sf.marineapi.ais.util.TimeStamp;
 
 /**
  * Parser for all position report messages.
- * 
+ *
  * <pre>
  * Field Name                                    Bits    (from,  to)
  * ------------------------------------------------------------------------
@@ -58,159 +58,175 @@ import net.sf.marineapi.ais.util.TimeStamp;
  *                                               ---- +
  *                                          sum   168
  * </pre>
- * 
+ *
  * @author Lázár József
  */
 class AISPositionReportParser extends AISMessageParser implements AISPositionReport {
 
-	private final static String	SEPARATOR				= "\n\t";
-	private final static int	NAVIGATIONALSTATUS		= 0;
-	private final static int	RATEOFTURN				= 1;
-	private final static int	SPEEDOVERGROUND			= 2;
-	private final static int	POSITIONACCURACY		= 3;
-	private final static int	LONGITUDE				= 4;
-	private final static int	LATITUDE				= 5;
-	private final static int	COURSEOVERGROUND		= 6;
-	private final static int	TRUEHEADING				= 7;
-	private final static int	TIMESTAMP				= 8;
-	private final static int	MANOEUVER				= 9;
-	private final static int[]	FROM					= {
-		38, 42, 50, 60, 61,  89, 116, 128, 137, 143};
-	private final static int[]	TO   					= {
-		42, 50, 60, 61, 89, 116, 128, 137, 143, 145};
+    private final static String SEPARATOR = "\n\t";
+    private final static int NAVIGATIONALSTATUS = 0;
+    private final static int RATEOFTURN = 1;
+    private final static int SPEEDOVERGROUND = 2;
+    private final static int POSITIONACCURACY = 3;
+    private final static int LONGITUDE = 4;
+    private final static int LATITUDE = 5;
+    private final static int COURSEOVERGROUND = 6;
+    private final static int TRUEHEADING = 7;
+    private final static int TIMESTAMP = 8;
+    private final static int MANOEUVER = 9;
+    private final static int[] FROM = { 38, 42, 50, 60, 61, 89, 116, 128, 137, 143 };
+    private final static int[] TO = { 42, 50, 60, 61, 89, 116, 128, 137, 143, 145 };
 
-	private int		fNavigationalStatus;
-	private int		fRateOfTurn;
-	private int		fSOG;
-	private boolean	fPositionAccuracy;
-	private int		fLongitude;
-	private int		fLatitude;
-	private int		fCOG;
-	private int		fTrueHeading;
-	private int		fTimeStamp;
-	private int		fManouverIndicator;
+    private final int fNavigationalStatus;
+    private final int fRateOfTurn;
+    private final int fSOG;
+    private final boolean fPositionAccuracy;
+    private final int fLongitude;
+    private final int fLatitude;
+    private final int fCOG;
+    private final int fTrueHeading;
+    private final int fTimeStamp;
+    private final int fManouverIndicator;
 
-	/**
-	 * Constructs an AIS Message Position Report parser.
-	 *
-	 * @param content Six-bit message content.
-	 */
-	public AISPositionReportParser(Sixbit content) {
-		super(content, 168, 204);
+    /**
+     * Constructs an AIS Message Position Report parser.
+     *
+     * @param content
+     *            Six-bit message content.
+     */
+    public AISPositionReportParser(final Sixbit content) {
+	super(content, 168, 220);
 
-	    fNavigationalStatus = content.getInt(FROM[NAVIGATIONALSTATUS], TO[NAVIGATIONALSTATUS]);
-	    if (!NavigationalStatus.isCorrect(fNavigationalStatus))
-	    	addViolation(new AISRuleViolation("NavigationalStatus", fNavigationalStatus, NavigationalStatus.RANGE));
-	    fRateOfTurn = content.getAs8BitInt(FROM[RATEOFTURN], TO[RATEOFTURN]);
-	    fSOG = content.getInt(FROM[SPEEDOVERGROUND], TO[SPEEDOVERGROUND]);
-
-	    // FIXME check indices, should be 61-61?
-	    fPositionAccuracy = content.getBoolean(TO[POSITIONACCURACY]);
-
-	    fLongitude = content.getAs28BitInt(FROM[LONGITUDE], TO[LONGITUDE]);
-	    if (!Longitude28.isCorrect(fLongitude))
-	    	addViolation(new AISRuleViolation("LongitudeInDegrees", fLongitude, Longitude28.RANGE));
-	    fLatitude = content.getAs27BitInt(FROM[LATITUDE], TO[LATITUDE]);
-	    if (!Latitude27.isCorrect(fLatitude))
-	    	addViolation(new AISRuleViolation("LatitudeInDegrees", fLatitude, Latitude27.RANGE));
-	    fCOG = content.getInt(FROM[COURSEOVERGROUND], TO[COURSEOVERGROUND]);
-	    if (!Angle12.isCorrect(fCOG))
-	    	addViolation(new AISRuleViolation("CourseOverGround", fCOG, Angle12.RANGE));
-	    fTrueHeading = content.getInt(FROM[TRUEHEADING], TO[TRUEHEADING]);
-	    if(!Angle9.isCorrect(fTrueHeading))
-	    	addViolation(new AISRuleViolation("TrueHeading", fTrueHeading, Angle9.RANGE));
-	    fTimeStamp = content.getInt(FROM[TIMESTAMP], TO[TIMESTAMP]);
-	    fManouverIndicator = content.getInt(FROM[MANOEUVER], TO[MANOEUVER]);
-	    if (!ManeuverIndicator.isCorrect(fManouverIndicator))
-	    	addViolation(new AISRuleViolation("ManouverIndicator", fManouverIndicator, ManeuverIndicator.RANGE));
+	fNavigationalStatus = content.getInt(FROM[NAVIGATIONALSTATUS], TO[NAVIGATIONALSTATUS]);
+	if (!NavigationalStatus.isCorrect(fNavigationalStatus)) {
+	    addViolation(new AISRuleViolation("NavigationalStatus", fNavigationalStatus, NavigationalStatus.RANGE));
 	}
+	fRateOfTurn = content.getAs8BitInt(FROM[RATEOFTURN], TO[RATEOFTURN]);
+	fSOG = content.getInt(FROM[SPEEDOVERGROUND], TO[SPEEDOVERGROUND]);
 
-	public int getNavigationalStatus() {
-	    return fNavigationalStatus;
-	}
+	// FIXME check indices, should be 61-61?
+	fPositionAccuracy = content.getBoolean(TO[POSITIONACCURACY]);
 
-	public double getRateOfTurn() {
-	    return RateOfTurn.toDegreesPerMinute(fRateOfTurn);
+	fLongitude = content.getAs28BitInt(FROM[LONGITUDE], TO[LONGITUDE]);
+	if (!Longitude28.isCorrect(fLongitude)) {
+	    addViolation(new AISRuleViolation("LongitudeInDegrees", fLongitude, Longitude28.RANGE));
 	}
+	fLatitude = content.getAs27BitInt(FROM[LATITUDE], TO[LATITUDE]);
+	if (!Latitude27.isCorrect(fLatitude)) {
+	    addViolation(new AISRuleViolation("LatitudeInDegrees", fLatitude, Latitude27.RANGE));
+	}
+	fCOG = content.getInt(FROM[COURSEOVERGROUND], TO[COURSEOVERGROUND]);
+	if (!Angle12.isCorrect(fCOG)) {
+	    addViolation(new AISRuleViolation("CourseOverGround", fCOG, Angle12.RANGE));
+	}
+	fTrueHeading = content.getInt(FROM[TRUEHEADING], TO[TRUEHEADING]);
+	if (!Angle9.isCorrect(fTrueHeading)) {
+	    addViolation(new AISRuleViolation("TrueHeading", fTrueHeading, Angle9.RANGE));
+	}
+	fTimeStamp = content.getInt(FROM[TIMESTAMP], TO[TIMESTAMP]);
+	fManouverIndicator = content.getInt(FROM[MANOEUVER], TO[MANOEUVER]);
+	if (!ManeuverIndicator.isCorrect(fManouverIndicator)) {
+	    addViolation(new AISRuleViolation("ManouverIndicator", fManouverIndicator, ManeuverIndicator.RANGE));
+	}
+    }
 
-	public double getSpeedOverGround() {
-		return SpeedOverGround.toKnots(fSOG);
-	}
+    @Override
+    public int getNavigationalStatus() {
+	return fNavigationalStatus;
+    }
 
-	public boolean isAccurate() {
-	    return fPositionAccuracy;
-	}
+    @Override
+    public double getRateOfTurn() {
+	return RateOfTurn.toDegreesPerMinute(fRateOfTurn);
+    }
 
-	public double getLongitudeInDegrees() {
-	    return Longitude28.toDegrees(fLongitude);
-	}
+    @Override
+    public double getSpeedOverGround() {
+	return SpeedOverGround.toKnots(fSOG);
+    }
 
-	public double getLatitudeInDegrees() {
-	    return Latitude27.toDegrees(fLatitude);
-	}
+    @Override
+    public boolean isAccurate() {
+	return fPositionAccuracy;
+    }
 
-	public double getCourseOverGround() {
-	    return Angle12.toDegrees(fCOG);
-	}
+    @Override
+    public double getLongitudeInDegrees() {
+	return Longitude28.toDegrees(fLongitude);
+    }
 
-	public int getTrueHeading() {
-	    return fTrueHeading;
-	}
+    @Override
+    public double getLatitudeInDegrees() {
+	return Latitude27.toDegrees(fLatitude);
+    }
 
-	public int getTimeStamp() {
-	    return fTimeStamp;
-	}
+    @Override
+    public double getCourseOverGround() {
+	return Angle12.toDegrees(fCOG);
+    }
 
-	public int getManouverIndicator() {
-	    return fManouverIndicator;
-	}
+    @Override
+    public int getTrueHeading() {
+	return fTrueHeading;
+    }
 
-	@Override
-	public boolean hasRateOfTurn() {
-		return RateOfTurn.isTurnIndicatorAvailable(fRateOfTurn);
-	}
+    @Override
+    public int getTimeStamp() {
+	return fTimeStamp;
+    }
 
-	@Override
-	public boolean hasSpeedOverGround() {
-		return SpeedOverGround.isAvailable(fSOG);
-	}
+    @Override
+    public int getManouverIndicator() {
+	return fManouverIndicator;
+    }
 
-	@Override
-	public boolean hasCourseOverGround() {
-		return Angle12.isAvailable(fCOG);
-	}
+    @Override
+    public boolean hasRateOfTurn() {
+	return RateOfTurn.isTurnIndicatorAvailable(fRateOfTurn);
+    }
 
-	@Override
-	public boolean hasTrueHeading() {
-		return Angle9.isAvailable(fTrueHeading);
-	}
+    @Override
+    public boolean hasSpeedOverGround() {
+	return SpeedOverGround.isAvailable(fSOG);
+    }
 
-	@Override
-	public boolean hasTimeStamp() {
-		return TimeStamp.isAvailable(fTimeStamp);
-	}
+    @Override
+    public boolean hasCourseOverGround() {
+	return Angle12.isAvailable(fCOG);
+    }
 
-	@Override
-	public boolean hasLongitude() {
-		return Longitude28.isAvailable(fLongitude);
-	}
+    @Override
+    public boolean hasTrueHeading() {
+	return Angle9.isAvailable(fTrueHeading);
+    }
 
-	@Override
-	public boolean hasLatitude() {
-		return Latitude27.isAvailable(fLatitude);
-	}
+    @Override
+    public boolean hasTimeStamp() {
+	return TimeStamp.isAvailable(fTimeStamp);
+    }
 
-	public String toString() {
-		String result =     "\tNav st:  " + NavigationalStatus.toString(fNavigationalStatus);
-		result += SEPARATOR + "ROT:     " + RateOfTurn.toString(fRateOfTurn);
-		result += SEPARATOR + "SOG:     " + SpeedOverGround.toString(fSOG);
-		result += SEPARATOR + "Pos acc: " + (fPositionAccuracy ? "high" : "low") + " accuracy";
-		result += SEPARATOR + "Lon:     " + Longitude28.toString(fLongitude);
-		result += SEPARATOR + "Lat:     " + Latitude27.toString(fLatitude);
-		result += SEPARATOR + "COG:     " + Angle12.toString(fCOG);
-		result += SEPARATOR + "Heading: " + Angle9.getTrueHeadingString(fTrueHeading);
-		result += SEPARATOR + "Time:    " + TimeStamp.toString(fTimeStamp);
-		result += SEPARATOR + "Man ind: " + ManeuverIndicator.toString(fManouverIndicator);
-		return result;
-	}
+    @Override
+    public boolean hasLongitude() {
+	return Longitude28.isAvailable(fLongitude);
+    }
+
+    @Override
+    public boolean hasLatitude() {
+	return Latitude27.isAvailable(fLatitude);
+    }
+
+    @Override
+    public String toString() {
+	String result = "\tNav st:  " + NavigationalStatus.toString(fNavigationalStatus);
+	result += SEPARATOR + "ROT:     " + RateOfTurn.toString(fRateOfTurn);
+	result += SEPARATOR + "SOG:     " + SpeedOverGround.toString(fSOG);
+	result += SEPARATOR + "Pos acc: " + (fPositionAccuracy ? "high" : "low") + " accuracy";
+	result += SEPARATOR + "Lon:     " + Longitude28.toString(fLongitude);
+	result += SEPARATOR + "Lat:     " + Latitude27.toString(fLatitude);
+	result += SEPARATOR + "COG:     " + Angle12.toString(fCOG);
+	result += SEPARATOR + "Heading: " + Angle9.getTrueHeadingString(fTrueHeading);
+	result += SEPARATOR + "Time:    " + TimeStamp.toString(fTimeStamp);
+	result += SEPARATOR + "Man ind: " + ManeuverIndicator.toString(fManouverIndicator);
+	return result;
+    }
 }

@@ -52,134 +52,181 @@ import net.sf.marineapi.ais.util.Sixbit;
  *                                                  ---- +
  *                                               sum 424
  * </pre>
- * 
+ *
  * @author Lázár József
  */
 class AISMessage05Parser extends AISMessageParser implements AISMessage05 {
 
-	private final static String	SEPARATOR			= "\n\t";
-	private static final int	AISVERSION			= 0;
-	private static final int	IMONUMBER			= 1;
-	private static final int	CALLSIGN			= 2;
-	private static final int	NAME				= 3;
-	private static final int	TYPEOFSHIPANDCARGO	= 4;
-	private static final int	BOW					= 5;
-	private static final int	STERN				= 6;
-	private static final int	PORT				= 7;
-	private static final int	STARBOARD			= 8;
-	private static final int	TYPEOFEPFD			= 9;
-	private static final int	MONTH				= 10;
-	private static final int 	DAY					= 11;
-	private static final int	HOUR				= 12;
-	private static final int 	MINUTE				= 13;
-	private static final int 	DRAUGHT				= 14;
-	private static final int 	DESTINATION			= 15;
-	private static final int	DTE 				= 16;
+    private final static String SEPARATOR = "\n\t";
+    private static final int AISVERSION = 0;
+    private static final int IMONUMBER = 1;
+    private static final int CALLSIGN = 2;
+    private static final int NAME = 3;
+    private static final int TYPEOFSHIPANDCARGO = 4;
+    private static final int BOW = 5;
+    private static final int STERN = 6;
+    private static final int PORT = 7;
+    private static final int STARBOARD = 8;
+    private static final int TYPEOFEPFD = 9;
+    private static final int MONTH = 10;
+    private static final int DAY = 11;
+    private static final int HOUR = 12;
+    private static final int MINUTE = 13;
+    private static final int DRAUGHT = 14;
+    private static final int DESTINATION = 15;
+    private static final int DTE = 16;
 
-	private final static int[]	FROM = {
-		38, 40,  70, 112, 232, 240, 249, 258, 264, 270, 274, 278, 283, 288, 294, 302
-	};
+    private final static int[] FROM = { 38, 40, 70, 112, 232, 240, 249, 258, 264, 270, 274, 278, 283, 288, 294, 302 };
 
-	private final static int[]	TO = {
-		40, 70, 112, 232, 240, 249, 258, 264, 270, 274, 278, 283, 288, 294, 302, 422, 423
-	};
+    private final static int[] TO = { 40, 70, 112, 232, 240, 249, 258, 264, 270, 274, 278, 283, 288, 294, 302, 422, 423 };
 
-	private int			fAISVersion;
-	private int			fIMONumber;
-	private String		fCallSign;
-	private String		fName;
-	private int			fShipAndCargoType;
-	private int			fBow;
-	private int			fStern;
-	private int			fPort;
-	private int			fStarboard;
-	private int			fTypeOfEPFD;
-	private int			fETAMinute;
-	private int			fETAHour;
-	private int			fETADay;
-	private int			fETAMonth;
-	private int			fMaximumDraught;
-	private String		fDestination;
-	private boolean		fDte;
+    private final int fAISVersion;
+    private final int fIMONumber;
+    private final String fCallSign;
+    private final String fName;
+    private final int fShipAndCargoType;
+    private final int fBow;
+    private final int fStern;
+    private final int fPort;
+    private final int fStarboard;
+    private final int fTypeOfEPFD;
+    private final int fETAMinute;
+    private final int fETAHour;
+    private final int fETADay;
+    private final int fETAMonth;
+    private final int fMaximumDraught;
+    private final String fDestination;
+    private final boolean fDte;
 
-	/**
-	 * Constructor.
-	 *
-	 * @param content Six-bit message content to parse.
-	 */
-	public AISMessage05Parser(Sixbit content) {
-		super(content, 424);
-		fAISVersion = content.getInt(FROM[AISVERSION], TO[AISVERSION]);
-		fIMONumber = content.getInt(FROM[IMONUMBER], TO[IMONUMBER]);
-		fCallSign = content.getString(FROM[CALLSIGN], TO[CALLSIGN]).trim();
-		fName = content.getString(FROM[NAME], TO[NAME]).trim();
-		fShipAndCargoType = content.getInt(FROM[TYPEOFSHIPANDCARGO], TO[TYPEOFSHIPANDCARGO]);
+    /**
+     * Constructor.
+     *
+     * @param content
+     *            Six-bit message content to parse.
+     */
+    public AISMessage05Parser(final Sixbit content) {
+	super(content, 424, 550);
+	fAISVersion = content.getInt(FROM[AISVERSION], TO[AISVERSION]);
+	fIMONumber = content.getInt(FROM[IMONUMBER], TO[IMONUMBER]);
+	fCallSign = content.getString(FROM[CALLSIGN], TO[CALLSIGN]).trim();
+	fName = content.getString(FROM[NAME], TO[NAME]).trim();
+	fShipAndCargoType = content.getInt(FROM[TYPEOFSHIPANDCARGO], TO[TYPEOFSHIPANDCARGO]);
 
-		fBow = content.getInt(FROM[BOW], TO[BOW]); 
-		fStern = content.getInt(FROM[STERN], TO[STERN]);
-		fPort = content.getInt(FROM[PORT], TO[PORT]);
-		fStarboard = content.getInt(FROM[STARBOARD], TO[STARBOARD]);
+	fBow = content.getInt(FROM[BOW], TO[BOW]);
+	fStern = content.getInt(FROM[STERN], TO[STERN]);
+	fPort = content.getInt(FROM[PORT], TO[PORT]);
+	fStarboard = content.getInt(FROM[STARBOARD], TO[STARBOARD]);
 
-		fTypeOfEPFD = content.getInt(FROM[TYPEOFEPFD], TO[TYPEOFEPFD]);
+	fTypeOfEPFD = content.getInt(FROM[TYPEOFEPFD], TO[TYPEOFEPFD]);
 
-		fETAMonth = content.getInt(FROM[MONTH], TO[MONTH]); 
-		fETADay = content.getInt(FROM[DAY], TO[DAY]);
-		fETAHour = content.getInt(FROM[HOUR], TO[HOUR]); 
-		fETAMinute = content.getInt(FROM[MINUTE], TO[MINUTE]); 
+	fETAMonth = content.getInt(FROM[MONTH], TO[MONTH]);
+	fETADay = content.getInt(FROM[DAY], TO[DAY]);
+	fETAHour = content.getInt(FROM[HOUR], TO[HOUR]);
+	fETAMinute = content.getInt(FROM[MINUTE], TO[MINUTE]);
 
-		fMaximumDraught = content.getInt(FROM[DRAUGHT], TO[DRAUGHT]);
-		fDestination = content.getString(FROM[DESTINATION], TO[DESTINATION]).trim();
-		fDte = content.getBoolean(TO[DTE]);
-	}    
+	fMaximumDraught = content.getInt(FROM[DRAUGHT], TO[DRAUGHT]);
+	fDestination = content.getString(FROM[DESTINATION], TO[DESTINATION]).trim();
+	fDte = content.getBoolean(TO[DTE]);
+    }
 
-	public int getAISVersionIndicator() { return fAISVersion; }
+    @Override
+    public int getAISVersionIndicator() {
+	return fAISVersion;
+    }
 
-	public int getIMONumber() { return fIMONumber; }
+    @Override
+    public int getIMONumber() {
+	return fIMONumber;
+    }
 
-	public String getCallSign() { return fCallSign; }
+    @Override
+    public String getCallSign() {
+	return fCallSign;
+    }
 
-	public String getName() { return fName; }
+    @Override
+    public String getName() {
+	return fName;
+    }
 
-	public int getTypeOfShipAndCargoType() { return fShipAndCargoType; }
+    @Override
+    public int getTypeOfShipAndCargoType() {
+	return fShipAndCargoType;
+    }
 
-	public int getBow() { return fBow; }
+    @Override
+    public int getBow() {
+	return fBow;
+    }
 
-	public int getStern() { return fStern; }
+    @Override
+    public int getStern() {
+	return fStern;
+    }
 
-	public int getPort() { return fPort; }
+    @Override
+    public int getPort() {
+	return fPort;
+    }
 
-	public int getStarboard() { return fStarboard; }
+    @Override
+    public int getStarboard() {
+	return fStarboard;
+    }
 
-	public int getTypeOfEPFD() { return fTypeOfEPFD; }
+    @Override
+    public int getTypeOfEPFD() {
+	return fTypeOfEPFD;
+    }
 
-	public int getETAMonth() { return fETAMonth; }
+    @Override
+    public int getETAMonth() {
+	return fETAMonth;
+    }
 
-	public int getETADay() { return fETADay; }
-	
-	public int getETAHour() { return fETAHour; }
-	
-	public int getETAMinute() { return fETAMinute; }
-	
-	public double getMaximumDraught() { return fMaximumDraught / 10.0; }
+    @Override
+    public int getETADay() {
+	return fETADay;
+    }
 
-	public String getDestination() { return fDestination; }
+    @Override
+    public int getETAHour() {
+	return fETAHour;
+    }
 
-	public boolean isDteReady() { return fDte; }
+    @Override
+    public int getETAMinute() {
+	return fETAMinute;
+    }
 
-	public String toString() {
-		String result =     "\tIMO:       " + Integer.toString(fIMONumber);
-		result += SEPARATOR + "Call sign: " + fCallSign;
-		result += SEPARATOR + "Name:      " + fName;
-		result += SEPARATOR + "Type:      " + ShipType.shipTypeToString(fShipAndCargoType);
-		String dim = "Bow: " + fBow + ", Stern: " + fStern +
-				", Port: " + fPort + ", Starboard: " + fStarboard + " [m]";
-		result += SEPARATOR + "Dim:       " + dim;
-		result += SEPARATOR + "ETA:       " + "Month: " + fETAMonth + ", D: " + fETADay +
-				", H: " + fETAHour + ", M: " + fETAMinute;
-		result += SEPARATOR + "Draft:     " + Float.toString(fMaximumDraught / 10f);
-		result += SEPARATOR + "EPFD:      " + PositioningDevice.toString(fTypeOfEPFD);
-		result += SEPARATOR + "Dest:      " + fDestination;
-		result += SEPARATOR + "DTE:       " + fDte;
-		return result;
-	}
+    @Override
+    public double getMaximumDraught() {
+	return fMaximumDraught / 10.0;
+    }
+
+    @Override
+    public String getDestination() {
+	return fDestination;
+    }
+
+    @Override
+    public boolean isDteReady() {
+	return fDte;
+    }
+
+    @Override
+    public String toString() {
+	String result = "\tIMO:       " + Integer.toString(fIMONumber);
+	result += SEPARATOR + "Call sign: " + fCallSign;
+	result += SEPARATOR + "Name:      " + fName;
+	result += SEPARATOR + "Type:      " + ShipType.shipTypeToString(fShipAndCargoType);
+	final String dim = "Bow: " + fBow + ", Stern: " + fStern + ", Port: " + fPort + ", Starboard: " + fStarboard + " [m]";
+	result += SEPARATOR + "Dim:       " + dim;
+	result += SEPARATOR + "ETA:       " + "Month: " + fETAMonth + ", D: " + fETADay + ", H: " + fETAHour + ", M: " + fETAMinute;
+	result += SEPARATOR + "Draft:     " + Float.toString(fMaximumDraught / 10f);
+	result += SEPARATOR + "EPFD:      " + PositioningDevice.toString(fTypeOfEPFD);
+	result += SEPARATOR + "Dest:      " + fDestination;
+	result += SEPARATOR + "DTE:       " + fDte;
+	return result;
+    }
 }
